@@ -1,7 +1,9 @@
 #!/bin/bash
 
 pwd
+cd /tmp/src
+ls -al
 # run the application
-java -jar target/ide-services-runner.jar
+java -jar /tmp/src/target/ide-services-runner.jar
 
 
