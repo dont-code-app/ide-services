@@ -23,7 +23,8 @@ public class IdeTestResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response testAsIde(String update) {
-        log.debug("Receiving from ide test {}", update);
+        log.debug("Receiving from test");
+        log.trace("{}", update);
         previewServiceClient.receiveUpdate(update);
         return Response.ok().build();
     }
