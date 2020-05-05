@@ -1,6 +1,6 @@
 #!/bin/bash
 
 # run the application
-java -jar /tmp/src/target/ide-services-runner.jar -Dquarkus.profile=openshift
+java -Dquarkus.profile=openshift -jar /tmp/src/target/ide-services-runner.jar
 
 
