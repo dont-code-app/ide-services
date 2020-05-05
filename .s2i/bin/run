@@ -1,6 +1,7 @@
 #!/bin/bash
 
+pwd
 # run the application
-java -jar /opt/app-root/target/ide-services-runner.jar
+java -jar target/ide-services-runner.jar
 
 
