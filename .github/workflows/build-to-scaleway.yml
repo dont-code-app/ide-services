@@ -16,12 +16,19 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
-
+    - name: Cache Maven repository
+      uses: actions/cache@v1
+      with:
+        path: ~/.maven # npm cache files are stored in `~/.npm` on Linux/macOS
+        key: ${{ runner.OS }}-maven-${{ hashFiles('pom.xml') }}
+        restore-keys: |
+            ${{ runner.OS }}-maven-
+            ${{ runner.OS }}-
     - name: Build with Maven
       run: mvn -B package -DskipTests --file pom.xml
     - uses: actions/upload-artifact@v1
         # Test run screenshots only on failure
       if: success()
       with:
-        name: artifact
-        path: target
+        name: ide-services-runner.jar
+        path: target/ide-services-runner.jar
