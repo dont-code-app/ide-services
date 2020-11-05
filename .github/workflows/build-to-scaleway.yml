@@ -18,9 +18,10 @@ jobs:
         java-version: 11
 
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
-
-    - name: Publish to GitHub Packages Apache Maven
-      run: mvn deploy
-      env:
-        GITHUB_TOKEN: ${{ github.token }} # GITHUB_TOKEN is the default env for the password
+      run: mvn -B package -DskipTests --file pom.xml
+    - uses: actions/upload-artifact@v1
+        # Test run screenshots only on failure
+      if: success()
+      with:
+        name: artifact
+        path: target
