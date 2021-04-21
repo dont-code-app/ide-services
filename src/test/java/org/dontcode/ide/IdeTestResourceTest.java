@@ -1,21 +1,35 @@
 package org.dontcode.ide;
 
+import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.InjectMock;
+import io.restassured.http.ContentType;
+import org.apache.http.HttpStatus;
+import org.dontcode.ide.preview.PreviewServiceClient;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
 
 @QuarkusTest
+@TestHTTPEndpoint(IdeTestResource.class)
 public class IdeTestResourceTest {
 
+    @InjectMock
+    @RestClient
+    PreviewServiceClient previewService;
+
     @Test
-    public void testHelloEndpoint() {
+    public void testTestEndpoint() {
+        String testString = "{\"name\":\"pizza\"}";
+
+        //Mockito.when (previewService.receiveUpdate(testString)).thenAnswer ();
         given()
-          .when().get("/hello")
+                .contentType(ContentType.JSON)
+                .body(testString)
+          .when().post("/")
           .then()
-             .statusCode(200)
-             .body(is("hello"));
+             .statusCode(HttpStatus.SC_OK);
     }
 
 }
