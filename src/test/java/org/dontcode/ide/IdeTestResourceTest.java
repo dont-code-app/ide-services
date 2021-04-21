@@ -8,6 +8,7 @@ import org.apache.http.HttpStatus;
 import org.dontcode.ide.preview.PreviewServiceClient;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import static io.restassured.RestAssured.given;
 
@@ -23,13 +24,13 @@ public class IdeTestResourceTest {
     public void testTestEndpoint() {
         String testString = "{\"name\":\"pizza\"}";
 
-        //Mockito.when (previewService.receiveUpdate(testString)).thenAnswer ();
         given()
                 .contentType(ContentType.JSON)
                 .body(testString)
           .when().post("/")
           .then()
              .statusCode(HttpStatus.SC_OK);
+        Mockito.verify(previewService, Mockito.times(1)).receiveUpdate(Mockito.anyString());
     }
 
 }
