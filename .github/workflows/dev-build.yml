@@ -24,3 +24,11 @@ jobs:
         key: ${{ runner.OS }}-maven-${{ hashFiles('pom.xml') }}
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    - name: Deploy to test
+      uses: appleboy/ssh-action@v0.1.4
+      with:
+        host: ${{ secrets.TEST_HOST_NAME }}
+        username: root
+        key: ${{ secrets.TEST_KEY }}
+        passphrase: ${{ secrets.TEST_PASSPHRASE }}
+        script: whoami
