@@ -33,6 +33,7 @@ jobs:
         passphrase: ${{ secrets.TEST_PASSPHRASE }}
         source: "target/ide-services-runner.jar"
         target: "/home/dont-code/services"
+        strip_components: 1
     - name: Restart test
       uses: appleboy/ssh-action@master
       with:
@@ -41,8 +42,4 @@ jobs:
         key: ${{ secrets.TEST_KEY }}
         passphrase: ${{ secrets.TEST_PASSPHRASE }}
         script: |
-          su - dont-code
-          whoami
-          cd ~/bin
-          pwd
-          ./restart-services.sh
+          sudo -u dont-code /home/dont-code/restart-services.sh
