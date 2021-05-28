@@ -41,3 +41,11 @@ jobs:
         run: |
           git commit -a -m "New release" --allow-empty
           git push
+      - name: Deploy to test
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.TEST_HOST_NAME }}
+          username: root
+          key: ${{ secrets.TEST_KEY }}
+          passphrase: ${{ secrets.TEST_PASSPHRASE }}
+          script: whoami
