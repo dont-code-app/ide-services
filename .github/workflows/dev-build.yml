@@ -42,4 +42,4 @@ jobs:
         key: ${{ secrets.TEST_KEY }}
         passphrase: ${{ secrets.TEST_PASSPHRASE }}
         script: |
-          sudo -u dont-code /home/dont-code/restart-services.sh
+          sudo -u dont-code /home/dont-code/bin/restart-service.sh ide-services
