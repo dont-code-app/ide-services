@@ -42,5 +42,7 @@ jobs:
         passphrase: ${{ secrets.TEST_PASSPHRASE }}
         script: |
           su - dont-code
+          whoami
           cd ~/bin
+          pwd
           ./restart-services.sh
