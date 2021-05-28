@@ -42,10 +42,21 @@ jobs:
           git commit -a -m "New release" --allow-empty
           git push
       - name: Deploy to test
-        uses: appleboy/ssh-action@v0.1.4
+        uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.TEST_HOST_NAME }}
           username: root
           key: ${{ secrets.TEST_KEY }}
           passphrase: ${{ secrets.TEST_PASSPHRASE }}
-          script: whoami
+          source: "target/ide-services-runner.jar"
+          target: "/home/dont-code/services"
+          strip_components: 1
+      - name: Restart test
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.TEST_HOST_NAME }}
+          username: root
+          key: ${{ secrets.TEST_KEY }}
+          passphrase: ${{ secrets.TEST_PASSPHRASE }}
+          script:
+            sudo -u dont-code /home/dont-code/bin/restart-service.sh ide-services
