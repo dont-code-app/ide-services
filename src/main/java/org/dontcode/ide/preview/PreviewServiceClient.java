@@ -1,5 +1,6 @@
 package org.dontcode.ide.preview;
 
+import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -13,5 +14,5 @@ import javax.ws.rs.Path;
 public interface PreviewServiceClient {
         @POST
         @Consumes("application/json")
-        void receiveUpdate (String update);
+        Uni<Void> receiveUpdate (String update);
 }
