@@ -38,7 +38,7 @@ public class IdeSocket {
     public void onOpen(Session session) {
         log.info("Session opened");
         sessions.put(session.getId(), session);
-        sessionService.createNewSession(session.getId(), session.getContainer().toString())
+        sessionService.createNewSession(session.getId(), session.getRequestURI().toString())
                 .flatMap(createdSession -> {
                     log.debug("Session {} created.", session.getId());
                     return Uni.createFrom().future(session.getAsyncRemote().sendText("{ \"result\":\"Success\", \"SessionId\":\""+session.getId()+"\"}"));
