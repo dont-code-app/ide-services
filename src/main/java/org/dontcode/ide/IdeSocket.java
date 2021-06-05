@@ -17,6 +17,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -38,7 +39,8 @@ public class IdeSocket {
     public void onOpen(Session session) {
         log.info("Session opened");
         sessions.put(session.getId(), session);
-        sessionService.createNewSession(session.getId(), session.getRequestURI().toString())
+        var clientType = session.getRequestParameterMap().getOrDefault("clientType", Collections.singletonList("none")).get(0);
+        sessionService.createNewSession(session.getId(), clientType)
                 .flatMap(createdSession -> {
                     log.debug("Session {} created.", session.getId());
                     return Uni.createFrom().future(session.getAsyncRemote().sendText("{ \"result\":\"Success\", \"SessionId\":\""+session.getId()+"\"}"));
