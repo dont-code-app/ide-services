@@ -1,4 +1,4 @@
-package org.dontcode.ide;
+package net.dontcode.ide;
 
 import io.quarkus.test.junit.QuarkusTestProfile;
 

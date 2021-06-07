@@ -1,21 +1,26 @@
-package org.dontcode.ide.session;
+package net.dontcode.ide.mongo;
 
 import com.mongodb.MongoClientSettings;
-import org.bson.*;
+import net.dontcode.ide.session.Session;
+import net.dontcode.ide.session.SessionActionType;
+import net.dontcode.mongo.ChangeCodec;
+import org.bson.BsonReader;
+import org.bson.BsonWriter;
+import org.bson.Document;
 import org.bson.codecs.Codec;
-import org.bson.codecs.CollectibleCodec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
-import org.bson.conversions.Bson;
 
 import java.time.ZoneId;
-import java.util.UUID;
 
-public class SessionCodec implements CollectibleCodec<Session> {
+public class SessionCodec implements Codec<Session> {
     private final Codec<Document> documentCodec;
+    private final ChangeCodec changeCodec;
 
     public SessionCodec() {
+
         this.documentCodec = MongoClientSettings.getDefaultCodecRegistry().get(Document.class);
+        this.changeCodec = new ChangeCodec();
     }
 
     @Override
@@ -28,32 +33,15 @@ public class SessionCodec implements CollectibleCodec<Session> {
             doc.put("type", session.type().name());
         if( session.srcInfo() != null)
             doc.put("srcInfo", session.srcInfo());
-        if( session.doc()!=null)
-            doc.put("change", session.doc());
+        if( session.change()!=null)
+            doc.put("change", changeCodec.toDocument(session.change()));
         documentCodec.encode(writer, doc, encoderContext);
     }
+
 
     @Override
     public Class<Session> getEncoderClass() {
         return Session.class;
-    }
-
-    @Override
-    public Session generateIdIfAbsentFromDocument(Session document) {
-        if (!documentHasId(document)) {
-            document = new Session (UUID.randomUUID().toString(),document.time(), document.type(), document.srcInfo(), document.doc());
-        }
-        return document;
-    }
-
-    @Override
-    public boolean documentHasId(Session document) {
-        return document.id() != null;
-    }
-
-    @Override
-    public BsonValue getDocumentId(Session document) {
-        return new BsonString(document.id());
     }
 
     @Override
@@ -64,7 +52,7 @@ public class SessionCodec implements CollectibleCodec<Session> {
                 document.getDate("time").toInstant(),
                 SessionActionType.valueOf(document.getString("type")),
                 document.getString("srcInfo"),
-                (changeDoc==null)?null:changeDoc.toBsonDocument());
+                changeCodec.fromDocument(changeDoc));
         return session;
     }
 }

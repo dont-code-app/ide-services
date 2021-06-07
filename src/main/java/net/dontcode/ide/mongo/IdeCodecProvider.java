@@ -1,12 +1,10 @@
-package org.dontcode.ide.mongo;
+package net.dontcode.ide.mongo;
 
+import net.dontcode.ide.session.Session;
 import org.bson.codecs.Codec;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
-import org.dontcode.ide.session.Session;
-import org.dontcode.ide.session.SessionActionType;
-import org.dontcode.ide.session.SessionActionTypeCodec;
-import org.dontcode.ide.session.SessionCodec;
+import net.dontcode.ide.session.SessionActionType;
 
 public class IdeCodecProvider implements CodecProvider {
         @Override

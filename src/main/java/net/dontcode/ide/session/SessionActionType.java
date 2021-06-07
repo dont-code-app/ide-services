@@ -1,4 +1,4 @@
-package org.dontcode.ide.session;
+package net.dontcode.ide.session;
 
 public enum SessionActionType {
     CREATE,

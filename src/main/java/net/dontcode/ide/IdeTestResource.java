@@ -1,6 +1,9 @@
-package org.dontcode.ide;
+package net.dontcode.ide;
 
-import org.dontcode.ide.preview.PreviewServiceClient;
+import io.smallrye.mutiny.Uni;
+import net.dontcode.core.Message;
+import net.dontcode.ide.preview.PreviewServiceClient;
+import net.dontcode.ide.session.SessionService;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +25,13 @@ public class IdeTestResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response testAsIde(String update) {
+    public Response testAsIde(Message update) {
         log.debug("Receiving from test");
         log.trace("{}", update);
-        previewServiceClient.receiveUpdate(update);
+
+        if( update.getType()!= Message.MessageType.INIT) {
+            previewServiceClient.receiveUpdate(update);
+        }
         return Response.ok().build();
     }
 }

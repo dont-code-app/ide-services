@@ -2,7 +2,7 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.dontcode.ide</groupId>
+  <groupId>net.dontcode.ide</groupId>
   <artifactId>ide-services</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <properties>
@@ -12,6 +12,7 @@
     <maven.compiler.target>16</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <dontcode-core.version>0.1.2-SNAPSHOT</dontcode-core.version>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus-plugin.version>2.0.0.CR3</quarkus-plugin.version>
     <quarkus.platform.version>2.0.0.CR3</quarkus.platform.version>
@@ -30,6 +31,11 @@
     </dependencies>
   </dependencyManagement>
   <dependencies>
+    <dependency>
+      <groupId>net.dontcode</groupId>
+      <artifactId>core</artifactId>
+      <version>${dontcode-core.version}</version>
+    </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5</artifactId>

@@ -1,4 +1,4 @@
-package org.dontcode.ide.session;
+package net.dontcode.ide.session;
 
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
@@ -9,6 +9,7 @@ import io.quarkus.mongodb.reactive.ReactiveMongoCollection;
 import io.quarkus.mongodb.reactive.ReactiveMongoDatabase;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
+import net.dontcode.core.Change;
 import org.bson.BsonDocument;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
@@ -46,8 +47,8 @@ public class SessionService {
         return getSession().find(and(Filters.eq("id", id), Filters.eq( "type",SessionActionType.CREATE.name()))).toUni();
     }
 
-    public Uni<Session> updateSession (String id, BsonDocument message) {
-        Session session = new Session(id, Instant.now(), SessionActionType.UPDATE, null, message);
+    public Uni<Session> updateSession (String id, Change change) {
+        Session session = new Session(id, Instant.now(), SessionActionType.UPDATE, null, change);
         return getSession().insertOne(session).map(insertOneResult -> {
             return session;
         }).onFailure().invoke(throwable -> {

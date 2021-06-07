@@ -1,4 +1,4 @@
-package org.dontcode.ide;
+package net.dontcode.ide;
 
 import com.mongodb.client.MongoClient;
 import de.flapdoodle.embed.mongo.MongodExecutable;
