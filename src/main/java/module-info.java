@@ -12,4 +12,7 @@ module ide.services {
     requires org.mongodb.driver.core;
     requires java.xml.bind;
     requires org.mongodb.bson;
+    requires com.fasterxml.jackson.core;
+    requires com.fasterxml.jackson.databind;
+    requires net.dontcode.core;
 }

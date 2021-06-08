@@ -1,14 +1,11 @@
-package org.dontcode.ide;
+package net.dontcode.ide;
 
 import io.smallrye.mutiny.Uni;
-import org.bson.Document;
-import org.bson.codecs.JsonObjectCodec;
-import org.bson.conversions.Bson;
-import org.bson.json.JsonObject;
-import org.bson.json.JsonReader;
-import org.dontcode.ide.preview.PreviewServiceClient;
-import org.dontcode.ide.session.SessionActionType;
-import org.dontcode.ide.session.SessionService;
+import net.dontcode.core.Message;
+import net.dontcode.ide.preview.PreviewServiceClient;
+import net.dontcode.ide.session.SessionActionType;
+import net.dontcode.ide.session.SessionService;
+import net.dontcode.websocket.MessageEncoderDecoder;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +18,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@ServerEndpoint("/ide")
+@ServerEndpoint(value = "/ide", encoders = MessageEncoderDecoder.class, decoders = MessageEncoderDecoder.class)
 @ApplicationScoped
 public class IdeSocket {
     private static Logger log = LoggerFactory.getLogger(IdeSocket.class);
@@ -43,11 +40,11 @@ public class IdeSocket {
         sessionService.createNewSession(session.getId(), clientType)
                 .flatMap(createdSession -> {
                     log.debug("Session {} created.", session.getId());
-                    return Uni.createFrom().future(session.getAsyncRemote().sendText("{ \"result\":\"Success\", \"SessionId\":\""+session.getId()+"\"}"));
+                    return Uni.createFrom().future(session.getAsyncRemote().sendObject(new Message(Message.MessageType.INIT, session.getId())));
                 })
                 .onFailure().call(throwable -> {
                     log.error("Error {} while saving session", throwable.getMessage());
-                    return  Uni.createFrom().future(session.getAsyncRemote().sendText("{ \"result\":\"Error\", \"ErrorMessage\":\""+throwable.getMessage()+"\"}"));
+                    return  Uni.createFrom().future(session.getAsyncRemote().sendObject(new Message(Message.MessageType.ERROR, throwable.getMessage())));
                 }).subscribe().with(unused -> {});
     }
 
@@ -71,18 +68,11 @@ public class IdeSocket {
     }
 
     @OnMessage
-    public void onMessage(String message, Session session) {
+    public void onMessage(Message message, Session session) {
         log.debug("Message Received");
         log.trace("{}", message);
 
-        previewServiceClient.receiveUpdate(message).subscribe().with(unused -> {
-        }, throwable -> {
-            log.error("Error calling previewService {}", throwable.getMessage());
-        });
-
-        JsonObject jsonMsg = new JsonObject(message);
-
-        sessionService.updateSession(session.getId(), jsonMsg.toBsonDocument())
+        sessionService.updateSession(session.getId(), message.getChange())
                 .flatMap(updatedSession -> {
                     log.debug("Session {} updated.", session.getId());
                     return Uni.createFrom().future(session.getAsyncRemote().sendText("{ \"result\":\"Success\", \"SessionId\":\""+session.getId()+"\"}"));
@@ -91,6 +81,15 @@ public class IdeSocket {
                     log.error("Error {} while updating session", throwable.getMessage());
                     return Uni.createFrom().future(session.getAsyncRemote().sendText("{ \"result\":\"Error\", \"ErrorMessage\":\"" + throwable.getMessage() + "\"}"));
             }).subscribe().with(unused -> {});
+
+        if( message.getType()!= Message.MessageType.INIT) {
+            if( message.getSessionId()==null) message.setSessionId(session.getId());
+            previewServiceClient.receiveUpdate(message).subscribe().with(unused -> {
+            }, throwable -> {
+                log.error("Error calling previewService {}", throwable.getMessage());
+            });
+        }
+
     }
 
     private void broadcast(String message) {

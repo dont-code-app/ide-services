@@ -1,16 +1,13 @@
-package org.dontcode.ide;
+package net.dontcode.ide;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.junit.mockito.InjectMock;
-import io.restassured.internal.path.json.JSONAssertion;
-import io.smallrye.mutiny.Uni;
-import io.smallrye.mutiny.helpers.test.AssertionHelper;
-import org.dontcode.ide.preview.PreviewServiceClient;
-import org.dontcode.ide.session.SessionService;
+import net.dontcode.core.Message;
+import net.dontcode.ide.preview.PreviewServiceClient;
+import net.dontcode.ide.session.SessionService;
+import net.dontcode.websocket.MessageEncoderDecoder;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -19,13 +16,10 @@ import org.mockito.Mockito;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.json.JsonReaderFactory;
-import javax.json.stream.JsonParserFactory;
 import javax.websocket.*;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URI;
-import java.time.Duration;
 
 @QuarkusTest
 @TestProfile(MongoTestProfile.class)
@@ -45,7 +39,7 @@ public class IdeSocketResourceTest extends AbstractMongoTest {
     public void testSession() throws DeploymentException, IOException, InterruptedException {
         //Mockito.when(previewService.receiveUpdate(Mockito.anyString())).thenThrow(new RuntimeException("Errorrrrererre"));//Return(Uni.createFrom().voidItem());
         try (Session session = ContainerProvider.getWebSocketContainer().connectToServer(ClientTestSession.class, uri)) {
-            org.dontcode.ide.session.Session savedSession=null;
+            net.dontcode.ide.session.Session savedSession=null;
             // Wait the data to be saved in the database
             for (int i = 0; i < 10; i++) {
                 Thread.sleep(50);
@@ -58,11 +52,11 @@ public class IdeSocketResourceTest extends AbstractMongoTest {
                 }
             }
             Assertions.assertNotNull(savedSession, "Session was not saved to database");
-            Mockito.verify(previewService, Mockito.times(1)).receiveUpdate(Mockito.anyString());
+            Mockito.verify(previewService, Mockito.times(0)).receiveUpdate(Mockito.any(Message.class));
         }
     }
 
-    @ClientEndpoint
+    @ClientEndpoint(encoders = MessageEncoderDecoder.class, decoders = MessageEncoderDecoder.class)
     public static class ClientTestSession {
 
         public static String sessionId=null;
@@ -72,17 +66,15 @@ public class IdeSocketResourceTest extends AbstractMongoTest {
             //MESSAGES.add("CONNECT");
             // Send a message to indicate that we are ready,
             // as the message handler may not be registered immediately after this callback.
-            session.getAsyncRemote().sendText("_ready_");
+            //session.getAsyncRemote().sendObject(new Message(Message.MessageType.INIT, ));
         }
 
         @OnMessage
-        void message(String msg) {
-            //MESSAGES.add(msg);
-            //System.out.println(msg);
-            JsonObject response = Json.createReader(new StringReader(msg)).readObject();
-            Assertions.assertEquals(response.getString("result"), "Success");
+        void message(Message msg) {
+            Assertions.assertEquals(msg.getType(), Message.MessageType.INIT);
+            Assertions.assertNotNull(msg.getSessionId());
 
-            sessionId = response.getString("SessionId");
+            sessionId = msg.getSessionId();
         }
 
         @OnError
