@@ -26,9 +26,6 @@ public class IdeTestResourceTest extends AbstractMongoTest{
 
     @Test
     public void testTestEndpoint() {
-        String testString = """
-                {"name":"pizza"}
-                """;
         Message toSend = new Message(Message.MessageType.INIT, "TestSession1");
 
         given()

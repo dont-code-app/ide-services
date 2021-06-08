@@ -2,13 +2,10 @@ package net.dontcode.ide;
 
 import io.smallrye.mutiny.Uni;
 import net.dontcode.core.Message;
+import net.dontcode.ide.preview.PreviewServiceClient;
 import net.dontcode.ide.session.SessionActionType;
 import net.dontcode.ide.session.SessionService;
 import net.dontcode.websocket.MessageEncoderDecoder;
-import org.bson.BSONObject;
-import org.bson.conversions.Bson;
-import org.bson.json.JsonObject;
-import net.dontcode.ide.preview.PreviewServiceClient;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
