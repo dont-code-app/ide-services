@@ -1,6 +1,6 @@
-package net.dontcode.ide.mongo;
+package net.dontcode.mongo;
 
-import net.dontcode.ide.session.SessionActionType;
+import net.dontcode.session.SessionActionType;
 import org.bson.BsonReader;
 import org.bson.BsonWriter;
 import org.bson.codecs.Codec;

@@ -6,7 +6,7 @@ import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.junit.mockito.InjectMock;
 import net.dontcode.core.Message;
 import net.dontcode.ide.preview.PreviewServiceClient;
-import net.dontcode.ide.session.SessionService;
+import net.dontcode.session.SessionService;
 import net.dontcode.websocket.MessageEncoderDecoder;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.Assertions;
@@ -14,11 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.inject.Inject;
-import javax.json.Json;
-import javax.json.JsonObject;
 import javax.websocket.*;
 import java.io.IOException;
-import java.io.StringReader;
 import java.net.URI;
 
 @QuarkusTest
@@ -39,7 +36,7 @@ public class IdeSocketResourceTest extends AbstractMongoTest {
     public void testSession() throws DeploymentException, IOException, InterruptedException {
         //Mockito.when(previewService.receiveUpdate(Mockito.anyString())).thenThrow(new RuntimeException("Errorrrrererre"));//Return(Uni.createFrom().voidItem());
         try (Session session = ContainerProvider.getWebSocketContainer().connectToServer(ClientTestSession.class, uri)) {
-            net.dontcode.ide.session.Session savedSession=null;
+            net.dontcode.session.Session savedSession=null;
             // Wait the data to be saved in the database
             for (int i = 0; i < 10; i++) {
                 Thread.sleep(50);
