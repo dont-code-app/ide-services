@@ -12,7 +12,7 @@
     <maven.compiler.target>16</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <dontcode-core.version>0.1.2-SNAPSHOT</dontcode-core.version>
+    <dontcode-core.version>0.1.2</dontcode-core.version>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus-plugin.version>2.0.0.CR3</quarkus-plugin.version>
     <quarkus.platform.version>2.0.0.CR3</quarkus.platform.version>

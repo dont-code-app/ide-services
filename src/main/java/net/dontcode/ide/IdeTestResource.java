@@ -25,13 +25,18 @@ public class IdeTestResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response testAsIde(Message update) {
+    public Uni<Response> testAsIde(Message update) {
         log.debug("Receiving from test");
         log.trace("{}", update);
 
         if( update.getType()!= Message.MessageType.INIT) {
-            previewServiceClient.receiveUpdate(update);
+            return previewServiceClient.receiveUpdate(update).map(unused -> {
+                return Response.ok().build();
+            }).onFailure().recoverWithItem(throwable -> {
+                log.error("Error calling previewService {}", throwable.getMessage());
+                return Response.serverError().entity("Error calling Preview Service:"+throwable.getMessage()).build();
+            });
         }
-        return Response.ok().build();
+        return Uni.createFrom().item(Response.ok().build());
     }
 }

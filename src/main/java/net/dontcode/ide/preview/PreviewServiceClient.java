@@ -8,6 +8,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
 
 @Path("/messages")
 @ApplicationScoped
@@ -15,5 +16,5 @@ import javax.ws.rs.Path;
 public interface PreviewServiceClient {
         @POST
         @Consumes("application/json")
-        Uni<Void> receiveUpdate (Message update);
+        Uni<Response> receiveUpdate (Message update);
 }

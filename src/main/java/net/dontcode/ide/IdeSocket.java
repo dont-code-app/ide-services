@@ -40,11 +40,11 @@ public class IdeSocket {
         sessionService.createNewSession(session.getId(), clientType)
                 .flatMap(createdSession -> {
                     log.debug("Session {} created.", session.getId());
-                    return Uni.createFrom().future(session.getAsyncRemote().sendText("{ \"result\":\"Success\", \"SessionId\":\""+session.getId()+"\"}"));
+                    return Uni.createFrom().future(session.getAsyncRemote().sendObject(new Message(Message.MessageType.INIT, session.getId())));
                 })
                 .onFailure().call(throwable -> {
                     log.error("Error {} while saving session", throwable.getMessage());
-                    return  Uni.createFrom().future(session.getAsyncRemote().sendText("{ \"result\":\"Error\", \"ErrorMessage\":\""+throwable.getMessage()+"\"}"));
+                    return  Uni.createFrom().future(session.getAsyncRemote().sendObject(new Message(Message.MessageType.INIT, "")));
                 }).subscribe().with(unused -> {});
     }
 
@@ -83,6 +83,7 @@ public class IdeSocket {
             }).subscribe().with(unused -> {});
 
         if( message.getType()!= Message.MessageType.INIT) {
+            if( message.getSessionId()==null) message.setSessionId(session.getId());
             previewServiceClient.receiveUpdate(message).subscribe().with(unused -> {
             }, throwable -> {
                 log.error("Error calling previewService {}", throwable.getMessage());
