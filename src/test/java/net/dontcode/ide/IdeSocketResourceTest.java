@@ -7,6 +7,7 @@ import io.quarkus.test.junit.mockito.InjectMock;
 import net.dontcode.core.Message;
 import net.dontcode.ide.preview.PreviewServiceClient;
 import net.dontcode.ide.session.SessionService;
+import net.dontcode.websocket.MessageEncoderDecoder;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -55,7 +56,7 @@ public class IdeSocketResourceTest extends AbstractMongoTest {
         }
     }
 
-    @ClientEndpoint
+    @ClientEndpoint(encoders = MessageEncoderDecoder.class, decoders = MessageEncoderDecoder.class)
     public static class ClientTestSession {
 
         public static String sessionId=null;
@@ -65,17 +66,15 @@ public class IdeSocketResourceTest extends AbstractMongoTest {
             //MESSAGES.add("CONNECT");
             // Send a message to indicate that we are ready,
             // as the message handler may not be registered immediately after this callback.
-            session.getAsyncRemote().sendText("_ready_");
+            //session.getAsyncRemote().sendObject(new Message(Message.MessageType.INIT, ));
         }
 
         @OnMessage
-        void message(String msg) {
-            //MESSAGES.add(msg);
-            //System.out.println(msg);
-            JsonObject response = Json.createReader(new StringReader(msg)).readObject();
-            Assertions.assertEquals(response.getString("result"), "Success");
+        void message(Message msg) {
+            Assertions.assertEquals(msg.getType(), Message.MessageType.INIT);
+            Assertions.assertNotNull(msg.getSessionId());
 
-            sessionId = response.getString("SessionId");
+            sessionId = msg.getSessionId();
         }
 
         @OnError
