@@ -44,7 +44,7 @@ public class IdeSocket {
                 })
                 .onFailure().call(throwable -> {
                     log.error("Error {} while saving session", throwable.getMessage());
-                    return  Uni.createFrom().future(session.getAsyncRemote().sendObject(new Message(Message.MessageType.INIT, "")));
+                    return  Uni.createFrom().future(session.getAsyncRemote().sendObject(new Message(Message.MessageType.ERROR, throwable.getMessage())));
                 }).subscribe().with(unused -> {});
     }
 
