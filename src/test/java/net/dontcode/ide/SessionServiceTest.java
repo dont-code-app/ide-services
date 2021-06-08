@@ -1,17 +1,12 @@
 package net.dontcode.ide;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import net.dontcode.core.Change;
 import net.dontcode.core.DontCodeModelPointer;
-import net.dontcode.ide.session.SessionService;
-import org.bson.BsonDocument;
-import org.bson.BsonString;
-import net.dontcode.ide.session.SessionActionType;
+import net.dontcode.session.SessionService;
+import net.dontcode.session.SessionActionType;
 import org.bson.json.JsonObject;
-import org.bson.json.JsonReader;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

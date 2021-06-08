@@ -1,4 +1,4 @@
-package net.dontcode.ide.session;
+package net.dontcode.session;
 
 import net.dontcode.core.Change;
 

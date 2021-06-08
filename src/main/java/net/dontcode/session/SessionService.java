@@ -1,4 +1,4 @@
-package net.dontcode.ide.session;
+package net.dontcode.session;
 
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
@@ -10,7 +10,6 @@ import io.quarkus.mongodb.reactive.ReactiveMongoDatabase;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import net.dontcode.core.Change;
-import org.bson.BsonDocument;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +35,7 @@ public class SessionService {
     public Uni<Session> createNewSession (String id,String srcInfo) {
         Session session = new Session(id, Instant.now(), SessionActionType.CREATE, srcInfo, null);
         return getSession().insertOne(session).map(insertOneResult -> {
-           return session;
+            return session;
         }).onFailure().invoke(throwable -> {
             log.error("Error InsertingMongo {}", throwable.getMessage());
         });
@@ -68,7 +67,7 @@ public class SessionService {
     public Multi<Session> listSessionsInOrder (String id) {
 
         return getSession().find(new FindOptions().filter(eq("id", id)).sort(Sorts.ascending("time"))).onFailure().invoke(throwable -> {
-            log.error("Error InsertingMongo {}", throwable.getMessage());
+            log.error("Error Listing Session from Mongo {}", throwable.getMessage());
         });
     }
 

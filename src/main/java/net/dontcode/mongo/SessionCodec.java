@@ -1,8 +1,8 @@
-package net.dontcode.ide.mongo;
+package net.dontcode.mongo;
 
 import com.mongodb.MongoClientSettings;
-import net.dontcode.ide.session.Session;
-import net.dontcode.ide.session.SessionActionType;
+import net.dontcode.session.Session;
+import net.dontcode.session.SessionActionType;
 import net.dontcode.mongo.ChangeCodec;
 import org.bson.BsonReader;
 import org.bson.BsonWriter;
@@ -12,6 +12,7 @@ import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 
 import java.time.ZoneId;
+import net.dontcode.session.Session;
 
 public class SessionCodec implements Codec<Session> {
     private final Codec<Document> documentCodec;
