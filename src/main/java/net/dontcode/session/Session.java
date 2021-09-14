@@ -2,8 +2,8 @@ package net.dontcode.session;
 
 import net.dontcode.core.Change;
 
-import java.time.Instant;
+import java.time.ZonedDateTime;
 
-public record Session (String id, Instant time, SessionActionType type, String srcInfo, Change change) {
+public record Session (String id, ZonedDateTime time, SessionActionType type, String srcInfo, Change change) {
 
 }

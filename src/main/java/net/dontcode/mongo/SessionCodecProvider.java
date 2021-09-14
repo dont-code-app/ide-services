@@ -1,6 +1,7 @@
 package net.dontcode.mongo;
 
 import net.dontcode.session.Session;
+import net.dontcode.session.SessionOverview;
 import org.bson.codecs.Codec;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -13,6 +14,8 @@ public class SessionCodecProvider implements CodecProvider {
                 return (Codec<T>) new SessionCodec();
             } else if (clazz == SessionActionType.class) {
                 return (Codec<T>) new SessionActionTypeCodec();
+            } else if (clazz == SessionOverview.class)  {
+                return (Codec<T>) new SessionOverviewCodec();
             }
             return null;
         }

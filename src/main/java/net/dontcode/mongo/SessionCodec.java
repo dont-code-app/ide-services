@@ -3,7 +3,6 @@ package net.dontcode.mongo;
 import com.mongodb.MongoClientSettings;
 import net.dontcode.session.Session;
 import net.dontcode.session.SessionActionType;
-import net.dontcode.mongo.ChangeCodec;
 import org.bson.BsonReader;
 import org.bson.BsonWriter;
 import org.bson.Document;
@@ -11,8 +10,9 @@ import org.bson.codecs.Codec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
-import net.dontcode.session.Session;
+import java.time.ZonedDateTime;
 
 public class SessionCodec implements Codec<Session> {
     private final Codec<Document> documentCodec;
@@ -29,7 +29,7 @@ public class SessionCodec implements Codec<Session> {
         Document doc = new Document();
         doc.put("id", session.id());
         if( session.time() != null)
-            doc.put("time", session.time().atZone(ZoneId.systemDefault()).toLocalDateTime());
+            doc.put("time", session.time().toInstant());
         if( session.type() != null)
             doc.put("type", session.type().name());
         if( session.srcInfo() != null)
@@ -50,7 +50,7 @@ public class SessionCodec implements Codec<Session> {
         Document document = documentCodec.decode(reader, decoderContext);
         var changeDoc =document.get("change", Document.class);
         Session session = new Session(document.getString("id"),
-                document.getDate("time").toInstant(),
+                ZonedDateTime.ofInstant(document.getDate("time").toInstant(), ZoneId.systemDefault()),
                 SessionActionType.valueOf(document.getString("type")),
                 document.getString("srcInfo"),
                 changeCodec.fromDocument(changeDoc));
