@@ -132,11 +132,6 @@ public class SessionService {
             }}""";
             pipeline.add(Document.parse(match));
         }
-        String sort="""
-            {$sort: {
-              time: 1
-            }}""";
-        pipeline.add(Document.parse(sort));
         String group="""
             {$group: {
               _id: "$id",
@@ -158,6 +153,11 @@ public class SessionService {
               }
             }}]""";
         pipeline.add(Document.parse(group));
+        String sort="""
+            {$sort: {
+              startTime: -1
+            }}""";
+        pipeline.add(Document.parse(sort));
         return getSession().aggregate(pipeline, SessionOverview.class).onFailure().invoke(throwable -> {
             log.error("Error Listing Sessions from/to using Mongo {}", throwable.getMessage());
         });
