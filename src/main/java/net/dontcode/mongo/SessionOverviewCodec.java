@@ -1,8 +1,6 @@
 package net.dontcode.mongo;
 
 import com.mongodb.MongoClientSettings;
-import net.dontcode.session.Session;
-import net.dontcode.session.SessionActionType;
 import net.dontcode.session.SessionOverview;
 import org.bson.BsonReader;
 import org.bson.BsonWriter;
@@ -44,7 +42,7 @@ public class SessionOverviewCodec implements Codec<SessionOverview> {
     public SessionOverview decode(BsonReader reader, DecoderContext decoderContext) {
         Document document = documentCodec.decode(reader, decoderContext);
         var changeDoc =document.get("change", Document.class);
-        SessionOverview session = new SessionOverview(document.getString("id"),
+        SessionOverview session = new SessionOverview(document.getString("_id"),
                 ZonedDateTime.ofInstant(document.getDate("startTime").toInstant(), ZoneId.systemDefault()),
                 ZonedDateTime.ofInstant(document.getDate("endTime").toInstant(), ZoneId.systemDefault()),
                 document.getBoolean("demo")==true,
