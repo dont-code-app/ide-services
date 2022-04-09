@@ -45,7 +45,7 @@ public class SessionOverviewCodec implements Codec<SessionOverview> {
         SessionOverview session = new SessionOverview(document.getString("_id"),
                 ZonedDateTime.ofInstant(document.getDate("startTime").toInstant(), ZoneId.systemDefault()),
                 ZonedDateTime.ofInstant(document.getDate("endTime").toInstant(), ZoneId.systemDefault()),
-                document.getBoolean("demo")==true,
+                document.getBoolean("isDemo")==true,
                 document.getInteger("eltCount"));
         return session;
     }

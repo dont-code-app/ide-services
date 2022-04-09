@@ -86,10 +86,10 @@ public class SessionServiceTest extends AbstractMongoTest {
         Thread.sleep(10);   // Make sure there are significant time difference between the 2 creation...
         createDummySession();
 
-        var allSessions = sessionService.listSessionOverview(null, null).collect().asList().await().indefinitely();
+        var allSessions = sessionService.listSessionOverview(null, null, null).collect().asList().await().indefinitely();
         Assertions.assertTrue(allSessions.size()>=2);
 
-        var testSessions = sessionService.listSessionOverview(firstBatchTime, secondBatchTime).collect().asList().await().indefinitely();
+        var testSessions = sessionService.listSessionOverview(firstBatchTime, secondBatchTime, null).collect().asList().await().indefinitely();
         Assertions.assertEquals(1, testSessions.size());
     }
 
