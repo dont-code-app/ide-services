@@ -77,42 +77,52 @@ public class SessionService {
 
     /**
      * Pipeline query:
-    $match:
-    {
-        $and: [ {
-        time: {
-            $gte: ISODate('2021-09-14T07:56:31.861+00:00'),
-                    $lt: ISODate('2021-09-14T18:00:20.049+00:00')
-        }}
-  ]
-    },
-     $sort: {
-     time: 1
-     },
-      $group:   {
-      _id: "$id",
-      eltCount: {
-        $sum: 1
-      },
-      startDate: {
-        $min: "$time"
-      },
-      endDate: {
-        $max: "$time"
-      },
-      isDemo: {
-        $first: {$eq: [
-           "$srcInfo",
-          "demo"
-        ]
+     $match:
+     {
+         and: [ {
+             time: {
+                 $gte: ISODate("2021-09-14T07:56:31.861+00:00"),
+                 $lt: ISODate("2022-09-14T18:00:20.049+00:00")
+                }
+            }
+         ]
+     }
+
+     $sort:
+     {
+         time: 1
+     }
+
+     $group:
+     {
+         _id: "$id",
+         eltCount: {
+             $sum: 1
+         },
+         startDate: {
+             $min: "$time"
+         },
+         endDate: {
+             $max: "$time"
+         },
+         isDemo: {
+             $first: {
+                $eq: [
+                 "$srcInfo",
+                 "demo"
+                ]
+            }
         }
-      }
-    }
+     }
+
+     $match: {
+        isDemo: true
+     }
      * @param from
      * @param to
      * @return
      */
-    public Multi<SessionOverview> listSessionOverview (ZonedDateTime from, ZonedDateTime to) {
+    public Multi<SessionOverview> listSessionOverview (ZonedDateTime from, ZonedDateTime to, String srcInfo) {
         ArrayList<Bson> pipeline=new ArrayList();
         if (from!=null || to!=null) {
             String match ="""
@@ -120,17 +130,21 @@ public class SessionService {
               $and: [ {
                 time: {""";
             if (from != null) {
-                match = match + "$gte: ISODate('" + from.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME) + "')";
+                match = match + "$gte: ISODate(\"" + from.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME) + "\")";
                 if (to != null) match = match + ",\n";
             }
             if (to != null) {
-                match = match + "$lt: ISODate('" + to.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME) + "')";
+                match = match + "$lt: ISODate(\"" + to.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME) + "\")";
             }
             match=match+"""
                 }}
               ]
             }}""";
             pipeline.add(Document.parse(match));
+        }
+        String querySrcInfo = srcInfo;
+        if (querySrcInfo==null) {
+            querySrcInfo = "demo";
         }
         String group="""
             {$group: {
@@ -144,10 +158,12 @@ public class SessionService {
               endTime: {
                 $max: "$time"
               },
-              demo: {
+              isDemo: {
                 $first: {$eq: [
                    "$srcInfo",
-                  "demo"
+                   """;
+        group = group+"\""+querySrcInfo+"\"";
+        group = group+"""
                 ]
                 }
               }
@@ -158,6 +174,14 @@ public class SessionService {
               startTime: -1
             }}""";
         pipeline.add(Document.parse(sort));
+        if (srcInfo!=null) {
+            String filter = """
+                    {$match: {
+                        isDemo: true
+                        }
+                    }""";
+            pipeline.add(Document.parse(filter));
+        }
         return getSession().aggregate(pipeline, SessionOverview.class).onFailure().invoke(throwable -> {
             log.error("Error Listing Sessions from/to using Mongo {}", throwable.getMessage());
         });
