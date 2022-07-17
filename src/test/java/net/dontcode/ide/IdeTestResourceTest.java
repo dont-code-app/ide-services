@@ -5,6 +5,8 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.http.ContentType;
+import net.dontcode.common.test.mongo.AbstractMongoTest;
+import net.dontcode.common.test.mongo.MongoTestProfile;
 import net.dontcode.core.Change;
 import net.dontcode.core.Message;
 import org.apache.http.HttpStatus;
@@ -18,7 +20,7 @@ import static io.restassured.RestAssured.given;
 @QuarkusTest
 @TestHTTPEndpoint(IdeTestResource.class)
 @TestProfile(MongoTestProfile.class)
-public class IdeTestResourceTest extends AbstractMongoTest{
+public class IdeTestResourceTest extends AbstractMongoTest {
 
     @InjectMock
     @RestClient
