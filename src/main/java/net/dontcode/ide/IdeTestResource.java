@@ -3,7 +3,7 @@ package net.dontcode.ide;
 import io.smallrye.mutiny.Uni;
 import net.dontcode.core.Message;
 import net.dontcode.ide.preview.PreviewServiceClient;
-import net.dontcode.session.SessionService;
+import net.dontcode.common.session.SessionService;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
