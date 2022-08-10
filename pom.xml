@@ -13,10 +13,10 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
-    <quarkus.platform.version>2.10.2.Final</quarkus.platform.version>
+    <quarkus.platform.version>2.11.1.Final</quarkus.platform.version>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
     <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
-    <dontcode-common.version>0.2.2</dontcode-common.version>
+    <dontcode-common.version>0.2.3-SNAPSHOT</dontcode-common.version>
   </properties>
   <dependencyManagement>
     <dependencies>
