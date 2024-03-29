@@ -10,10 +10,10 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.websocket.*;
-import javax.websocket.server.ServerEndpoint;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.websocket.*;
+import jakarta.websocket.server.ServerEndpoint;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,6 +41,8 @@ public class IdeSocket {
                 .flatMap(createdSession -> {
                     log.debug("Session {} created.", session.getId());
                     return Uni.createFrom().future(session.getAsyncRemote().sendObject(new Message(Message.MessageType.INIT, session.getId())));
+                }).invoke(() -> {
+                    log.debug ("Response sent");
                 })
                 .onFailure().call(throwable -> {
                     log.error("Error {} while saving session", throwable.getMessage());

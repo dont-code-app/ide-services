@@ -3,7 +3,7 @@ package net.dontcode.ide;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
-import io.quarkus.test.junit.mockito.InjectMock;
+import io.quarkus.test.InjectMock;
 import io.restassured.http.ContentType;
 import net.dontcode.common.test.mongo.AbstractMongoTest;
 import net.dontcode.common.test.mongo.MongoTestProfile;
